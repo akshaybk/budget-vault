@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Budget Vault</title><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section id="auth" class="auth-card">
+      <div class="brand-mark">₹</div><p class="eyebrow">PERSONAL FINANCE</p><h1>Budget Vault</h1>
+      <p id="authIntro" class="muted">Create a private space to manage your money from any device.</p>
+      <form id="authForm"><label>Email address <input id="username" type="email" required autocomplete="email" placeholder="you@example.com"></label>
+      <label>Password <input id="passcode" type="password" minlength="4" required autocomplete="new-password" placeholder="At least 4 characters"></label>
+      <label id="confirmWrap">Confirm password <input id="confirmPasscode" type="password" minlength="4" autocomplete="new-password" placeholder="Repeat your password"></label>
+      <button id="authButton" class="primary" type="submit">Create account</button></form>
+      <p id="authHint" class="form-note">Your password is securely handled by your account provider.</p>
+      <button id="switchAuth" class="text-button" type="button">Already have an account? Log in</button>
+    </section>
+
+    <section id="dashboard" hidden>
+      <header><div><p class="eyebrow">WELCOME BACK</p><h1>My budget</h1><p id="monthLabel" class="muted"></p></div><button id="lockBtn" class="ghost">Lock vault</button></header>
+      <section class="summary-grid"><article class="summary budget"><span>Total budget</span><strong id="budgetTotal">₹0</strong><button id="editBudgetBtn">Edit budget</button></article><article class="summary spent"><span>Total spent</span><strong id="totalSpent">₹0</strong><small id="expenseCount">0 transactions</small></article><article class="summary balance"><span>Available balance</span><strong id="balance">₹0</strong><small id="budgetState">Set a budget to begin</small></article></section>
+      <section class="quick-actions"><button id="addExpenseBtn" class="primary">+ Add expense</button><button id="addCategoryBtn" class="secondary">Manage categories</button><button id="csvBtn" class="secondary">Download Excel</button><button id="pdfBtn" class="secondary">Save as PDF</button></section>
+      <section class="content-grid"><article class="panel expense-panel"><div class="panel-head"><div><h2>Recent expenses</h2><p class="muted">Track where your money goes.</p></div><div class="filters"><input id="searchInput" placeholder="Search expenses"><select id="categoryFilter"><option value="">All categories</option></select></div></div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Expense</th><th>Category</th><th>Amount</th><th></th></tr></thead><tbody id="expensesBody"></tbody></table></div><p id="emptyState" class="empty">No expenses yet. Add your first one above.</p></article><article class="panel"><h2>Spending by category</h2><div id="categoryBreakdown" class="breakdown"></div><p class="form-note">Tip: review this weekly to spot categories that need attention.</p></article></section>
+    </section>
+  </main>
+  <dialog id="expenseDialog"><form id="expenseForm" method="dialog" class="modal"><div class="modal-title"><h2 id="expenseTitle">Add expense</h2><button type="button" class="icon" data-close="expenseDialog">×</button></div><input id="expenseId" type="hidden"><label>Description <input id="expenseDescription" required maxlength="80" placeholder="e.g. Weekly groceries"></label><div class="form-row"><label>Amount <input id="expenseAmount" type="number" min="0.01" step="0.01" required placeholder="0.00"></label><label>Date <input id="expenseDate" type="date" required></label></div><label>Category <select id="expenseCategory" required></select></label><label>Notes <textarea id="expenseNotes" maxlength="250" placeholder="Optional details"></textarea></label><button class="primary" type="submit">Save expense</button></form></dialog>
+  <dialog id="budgetDialog"><form id="budgetForm" method="dialog" class="modal"><div class="modal-title"><h2>Set total budget</h2><button type="button" class="icon" data-close="budgetDialog">×</button></div><label>Budget amount <input id="budgetInput" type="number" min="0" step="0.01" required placeholder="0.00"></label><p class="form-note">This is your overall available budget. Expenses update the balance automatically.</p><button class="primary" type="submit">Save budget</button></form></dialog>
+  <dialog id="categoryDialog"><form id="categoryForm" method="dialog" class="modal"><div class="modal-title"><h2>Expense categories</h2><button type="button" class="icon" data-close="categoryDialog">×</button></div><div id="categoryList" class="category-list"></div><div class="add-category"><input id="newCategory" maxlength="30" placeholder="New category"><button class="secondary" type="button" id="createCategoryBtn">Add</button></div></form></dialog>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body></html>
