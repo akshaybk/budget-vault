@@ -24,9 +24,11 @@
     <p class="eyebrow">WELCOME BACK</p>
     <h1>My budget</h1>
     <p id="monthLabel" class="muted"></p>
-    <div class="profile-links">
-      <strong>Akshay B K</strong>
+    <div class="profile-links" aria-label="Profile links">
+      <span class="profile-name">Akshay B K</span>
+      <span class="profile-divider" aria-hidden="true">·</span>
       <a href="https://github.com/akshaybk" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <span class="profile-divider" aria-hidden="true">·</span>
       <a href="https://www.linkedin.com/in/akshaybk8593" target="_blank" rel="noopener noreferrer">LinkedIn</a>
     </div>
   </div>
@@ -43,13 +45,6 @@
   <dialog id="expenseDialog"><form id="expenseForm" method="dialog" class="modal"><div class="modal-title"><h2 id="expenseTitle">Add expense</h2><button type="button" class="icon" data-close="expenseDialog">×</button></div><input id="expenseId" type="hidden"><label>Description <input id="expenseDescription" required maxlength="80" placeholder="e.g. Weekly groceries"></label><div class="form-row"><label>Amount <input id="expenseAmount" type="number" min="0.01" step="0.01" required placeholder="0.00"></label><label>Date <input id="expenseDate" type="date" required></label></div><label>Category <select id="expenseCategory" required></select></label><label>Notes <textarea id="expenseNotes" maxlength="250" placeholder="Optional details"></textarea></label><button class="primary" type="submit">Save expense</button></form></dialog>
   <dialog id="budgetDialog"><form id="budgetForm" method="dialog" class="modal"><div class="modal-title"><h2>Set total budget</h2><button type="button" class="icon" data-close="budgetDialog">×</button></div><label>Budget amount <input id="budgetInput" type="number" min="0" step="0.01" required placeholder="0.00"></label><p class="form-note">This is your overall available budget. Expenses update the balance automatically.</p><button class="primary" type="submit">Save budget</button></form></dialog>
   <dialog id="categoryDialog"><form id="categoryForm" method="dialog" class="modal"><div class="modal-title"><h2>Expense categories</h2><button type="button" class="icon" data-close="categoryDialog">×</button></div><div id="categoryList" class="category-list"></div><div class="add-category"><input id="newCategory" maxlength="30" placeholder="New category"><button class="secondary" type="button" id="createCategoryBtn">Add</button></div></form></dialog>
-  <footer class="site-footer">
-    <span>Budget Vault · <strong>Akshay B K</strong></span>
-    <nav aria-label="Profile links">
-      <a href="https://github.com/akshaybk" target="_blank" rel="noopener noreferrer">GitHub</a>
-      <a href="https://www.linkedin.com/in/akshaybk8593" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-    </nav>
-  </footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>
