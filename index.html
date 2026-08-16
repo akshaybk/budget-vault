@@ -24,12 +24,15 @@
     <p class="eyebrow">WELCOME BACK</p>
     <h1>My budget</h1>
     <p id="monthLabel" class="muted"></p>
-    <div class="profile-links" aria-label="Profile links">
-      <span class="profile-name">Akshay B K</span>
-      <span class="profile-divider" aria-hidden="true">·</span>
-      <a href="https://github.com/akshaybk" target="_blank" rel="noopener noreferrer">GitHub</a>
-      <span class="profile-divider" aria-hidden="true">·</span>
-      <a href="https://www.linkedin.com/in/akshaybk8593" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    <div class="profile-links" aria-label="Creator and profile links">
+      <span class="creator-label">Created by <strong>Akshay B K</strong></span>
+      <span class="profile-divider" aria-hidden="true"></span>
+      <a class="social-link" href="https://github.com/akshaybk" target="_blank" rel="noopener noreferrer" aria-label="Akshay B K on GitHub" title="GitHub">
+        <svg class="social-icon github-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .6a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.04c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.74.08-.74 1.2.08 1.83 1.23 1.83 1.23 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.23-3.22-.12-.3-.53-1.53.12-3.18 0 0 1-.32 3.3 1.23a11.45 11.45 0 0 1 6 0c2.29-1.55 3.29-1.23 3.29-1.23.66 1.65.25 2.88.13 3.18.77.84 1.23 1.91 1.23 3.22 0 4.62-2.81 5.64-5.49 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.57A12 12 0 0 0 12 .6Z"/></svg>
+      </a>
+      <a class="social-link linkedin-link" href="https://www.linkedin.com/in/akshaybk8593" target="_blank" rel="noopener noreferrer" aria-label="Akshay B K on LinkedIn" title="LinkedIn">
+        <svg class="social-icon linkedin-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.49 2.49 0 1 1 5 8.48a2.49 2.49 0 0 1-.02-4.98ZM3 9.5h4V21H3V9.5Zm6.5 0h3.84v1.57h.05c.54-1.02 1.85-2.1 3.81-2.1 4.08 0 4.84 2.68 4.84 6.16V21h-4v-5.2c0-1.24-.02-2.84-1.73-2.84-1.73 0-1.99 1.35-1.99 2.75V21h-4V9.5Z"/></svg>
+      </a>
     </div>
   </div>
   <div class="header-actions">
@@ -40,6 +43,21 @@
       <section class="summary-grid"><article class="summary budget"><span>Total budget</span><strong id="budgetTotal">₹0</strong><button id="editBudgetBtn">Edit budget</button></article><article class="summary spent"><span>Total spent</span><strong id="totalSpent">₹0</strong><small id="expenseCount">0 transactions</small></article><article class="summary balance"><span>Available balance</span><strong id="balance">₹0</strong><small id="budgetState">Set a budget to begin</small></article></section>
       <section class="quick-actions"><button id="addExpenseBtn" class="primary">+ Add expense</button><button id="addCategoryBtn" class="secondary">Manage categories</button><button id="csvBtn" class="secondary">Download Excel</button><button id="pdfBtn" class="secondary">Save as PDF</button></section>
       <section class="content-grid"><article class="panel expense-panel"><div class="panel-head"><div><h2>Recent expenses</h2><p class="muted">Track where your money goes.</p></div><div class="filters"><input id="searchInput" placeholder="Search expenses"><select id="categoryFilter"><option value="">All categories</option></select></div></div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Expense</th><th>Category</th><th>Amount</th><th></th></tr></thead><tbody id="expensesBody"></tbody></table></div><p id="emptyState" class="empty">No expenses yet. Add your first one above.</p></article><article class="panel"><h2>Spending by category</h2><div id="categoryBreakdown" class="breakdown"></div><p class="form-note">Tip: review this weekly to spot categories that need attention.</p></article></section>
+      <div id="confirmationToast" class="confirmation-toast" role="status" aria-live="polite" hidden>
+        <span class="confirmation-check" aria-hidden="true">✓</span>
+        <div><strong>Email confirmed</strong><span>Welcome to Budget Vault. Your account is ready.</span></div>
+      </div>
+      <footer class="site-footer">
+        <div><span>Budget Vault</span><small>Created by <strong>Akshay B K</strong></small></div>
+        <nav aria-label="Creator links">
+          <a class="social-link" href="https://github.com/akshaybk" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub">
+            <svg class="social-icon github-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .6a12 12 0 0 0-3.79 23.39c.6.11.82-.26.82-.58v-2.04c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.74.08-.74 1.2.08 1.83 1.23 1.83 1.23 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.95 0-1.31.47-2.38 1.23-3.22-.12-.3-.53-1.53.12-3.18 0 0 1-.32 3.3 1.23a11.45 11.45 0 0 1 6 0c2.29-1.55 3.29-1.23 3.29-1.23.66 1.65.25 2.88.13 3.18.77.84 1.23 1.91 1.23 3.22 0 4.62-2.81 5.64-5.49 5.94.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.57A12 12 0 0 0 12 .6Z"/></svg>
+          </a>
+          <a class="social-link linkedin-link" href="https://www.linkedin.com/in/akshaybk8593" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" title="LinkedIn">
+            <svg class="social-icon linkedin-icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5A2.49 2.49 0 1 1 5 8.48a2.49 2.49 0 0 1-.02-4.98ZM3 9.5h4V21H3V9.5Zm6.5 0h3.84v1.57h.05c.54-1.02 1.85-2.1 3.81-2.1 4.08 0 4.84 2.68 4.84 6.16V21h-4v-5.2c0-1.24-.02-2.84-1.73-2.84-1.73 0-1.99 1.35-1.99 2.75V21h-4V9.5Z"/></svg>
+          </a>
+        </nav>
+      </footer>
     </section>
   </main>
   <dialog id="expenseDialog"><form id="expenseForm" method="dialog" class="modal"><div class="modal-title"><h2 id="expenseTitle">Add expense</h2><button type="button" class="icon" data-close="expenseDialog">×</button></div><input id="expenseId" type="hidden"><label>Description <input id="expenseDescription" required maxlength="80" placeholder="e.g. Weekly groceries"></label><div class="form-row"><label>Amount <input id="expenseAmount" type="number" min="0.01" step="0.01" required placeholder="0.00"></label><label>Date <input id="expenseDate" type="date" required></label></div><label>Category <select id="expenseCategory" required></select></label><label>Notes <textarea id="expenseNotes" maxlength="250" placeholder="Optional details"></textarea></label><button class="primary" type="submit">Save expense</button></form></dialog>
