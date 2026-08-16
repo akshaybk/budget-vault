@@ -19,7 +19,22 @@
     </section>
 
     <section id="dashboard" hidden>
-      <header><div><p class="eyebrow">WELCOME BACK</p><h1>My budget</h1><p id="monthLabel" class="muted"></p></div><div class="header-actions"><button id="themeBtn" class="ghost" type="button" aria-label="Switch to dark mode">☾ Dark</button><button id="lockBtn" class="ghost">Lock vault</button></div></header>
+      <header>
+  <div>
+    <p class="eyebrow">WELCOME BACK</p>
+    <h1>My budget</h1>
+    <p id="monthLabel" class="muted"></p>
+    <div class="profile-links">
+      <strong>Akshay B K</strong>
+      <a href="https://github.com/akshaybk" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://www.linkedin.com/in/akshaybk8593" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </div>
+  </div>
+  <div class="header-actions">
+    <button id="themeBtn" class="ghost" type="button" aria-label="Switch to dark mode">☾ Dark</button>
+    <button id="lockBtn" class="ghost">Lock vault</button>
+  </div>
+</header>
       <section class="summary-grid"><article class="summary budget"><span>Total budget</span><strong id="budgetTotal">₹0</strong><button id="editBudgetBtn">Edit budget</button></article><article class="summary spent"><span>Total spent</span><strong id="totalSpent">₹0</strong><small id="expenseCount">0 transactions</small></article><article class="summary balance"><span>Available balance</span><strong id="balance">₹0</strong><small id="budgetState">Set a budget to begin</small></article></section>
       <section class="quick-actions"><button id="addExpenseBtn" class="primary">+ Add expense</button><button id="addCategoryBtn" class="secondary">Manage categories</button><button id="csvBtn" class="secondary">Download Excel</button><button id="pdfBtn" class="secondary">Save as PDF</button></section>
       <section class="content-grid"><article class="panel expense-panel"><div class="panel-head"><div><h2>Recent expenses</h2><p class="muted">Track where your money goes.</p></div><div class="filters"><input id="searchInput" placeholder="Search expenses"><select id="categoryFilter"><option value="">All categories</option></select></div></div><div class="table-wrap"><table><thead><tr><th>Date</th><th>Expense</th><th>Category</th><th>Amount</th><th></th></tr></thead><tbody id="expensesBody"></tbody></table></div><p id="emptyState" class="empty">No expenses yet. Add your first one above.</p></article><article class="panel"><h2>Spending by category</h2><div id="categoryBreakdown" class="breakdown"></div><p class="form-note">Tip: review this weekly to spot categories that need attention.</p></article></section>
@@ -28,6 +43,13 @@
   <dialog id="expenseDialog"><form id="expenseForm" method="dialog" class="modal"><div class="modal-title"><h2 id="expenseTitle">Add expense</h2><button type="button" class="icon" data-close="expenseDialog">×</button></div><input id="expenseId" type="hidden"><label>Description <input id="expenseDescription" required maxlength="80" placeholder="e.g. Weekly groceries"></label><div class="form-row"><label>Amount <input id="expenseAmount" type="number" min="0.01" step="0.01" required placeholder="0.00"></label><label>Date <input id="expenseDate" type="date" required></label></div><label>Category <select id="expenseCategory" required></select></label><label>Notes <textarea id="expenseNotes" maxlength="250" placeholder="Optional details"></textarea></label><button class="primary" type="submit">Save expense</button></form></dialog>
   <dialog id="budgetDialog"><form id="budgetForm" method="dialog" class="modal"><div class="modal-title"><h2>Set total budget</h2><button type="button" class="icon" data-close="budgetDialog">×</button></div><label>Budget amount <input id="budgetInput" type="number" min="0" step="0.01" required placeholder="0.00"></label><p class="form-note">This is your overall available budget. Expenses update the balance automatically.</p><button class="primary" type="submit">Save budget</button></form></dialog>
   <dialog id="categoryDialog"><form id="categoryForm" method="dialog" class="modal"><div class="modal-title"><h2>Expense categories</h2><button type="button" class="icon" data-close="categoryDialog">×</button></div><div id="categoryList" class="category-list"></div><div class="add-category"><input id="newCategory" maxlength="30" placeholder="New category"><button class="secondary" type="button" id="createCategoryBtn">Add</button></div></form></dialog>
+  <footer class="site-footer">
+    <span>Budget Vault · <strong>Akshay B K</strong></span>
+    <nav aria-label="Profile links">
+      <a href="https://github.com/akshaybk" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://www.linkedin.com/in/akshaybk8593" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+    </nav>
+  </footer>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="app.js"></script>

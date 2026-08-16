@@ -601,6 +601,64 @@ body[data-theme="dark"] .category-list div{
 }
 
 
+
+/* =========================
+   PROFILE / SOCIAL LINKS
+   ========================= */
+
+.profile-links{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:10px;
+  font-size:.82rem
+}
+
+.profile-links strong{
+  font-size:.84rem
+}
+
+.profile-links a,
+.site-footer a{
+  color:var(--teal);
+  text-decoration:none;
+  font-weight:650
+}
+
+.profile-links a:hover,
+.site-footer a:hover{
+  text-decoration:underline
+}
+
+.site-footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+  margin-top:30px;
+  padding-top:18px;
+  border-top:1px solid var(--line);
+  color:var(--muted);
+  font-size:.82rem
+}
+
+.site-footer nav{
+  display:flex;
+  gap:14px
+}
+
+@media (max-width:600px){
+  .site-footer{
+    flex-direction:column;
+    align-items:flex-start
+  }
+
+  .profile-links{
+    gap:8px
+  }
+}
+
 /* =========================
    PRINT
    ========================= */
