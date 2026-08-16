@@ -18,6 +18,7 @@ Budget Vault is a lightweight personal-finance web application for tracking a bu
 - Light and dark themes
 - Responsive layout for desktop and mobile
 - Creator links for GitHub and LinkedIn
+- Custom Budget Vault favicon
 - Row Level Security (RLS) so each signed-in user can access only their own data
 
 ## 🛠️ Tech Stack
@@ -44,7 +45,11 @@ budget-vault/
 ├── styles.css            # UI, responsive styles, and dark theme
 ├── config.js             # Supabase project URL and publishable key
 ├── supabase-schema.sql   # Database tables and RLS policies
+├── favicon.svg           # Main browser favicon
+├── favicon.ico           # ICO favicon fallback
+├── favicon.png           # PNG favicon
 ├── README.md             # Project documentation
+├── LICENSE               # MIT License
 └── .gitignore            # Files that should not be committed
 ```
 
@@ -170,7 +175,7 @@ Save the configuration and wait for GitHub Pages to publish the site.
 
 ## 🔄 Updating the Project
 
-After making changes:
+For small changes that have already been tested:
 
 ```bash
 git add .
@@ -178,7 +183,21 @@ git commit -m "Describe your change"
 git push
 ```
 
-GitHub Pages will automatically publish the new version.
+For larger features or changes involving authentication, database logic, or significant UI changes, it is recommended to use a feature branch and Pull Request:
+
+```bash
+git checkout main
+git pull origin main
+git checkout -b your-feature-name
+
+# Make and test your changes
+
+git add .
+git commit -m "Describe your change"
+git push -u origin your-feature-name
+```
+
+Then create a Pull Request on GitHub and merge it into `main` after reviewing and testing the changes.
 
 ## 🔒 Security Notes
 
@@ -238,4 +257,14 @@ The creator section uses inline SVG GitHub and LinkedIn marks so it does not dep
 
 ## 📄 License
 
-This project does not currently specify an open-source license. If you intend to allow others to reuse or modify the code, add an appropriate `LICENSE` file.
+Budget Vault is released under the **MIT License**.
+
+Copyright © 2026 **Akshay B K**.
+
+The MIT License permits others to use, copy, modify, merge, publish, distribute, sublicense, and sell copies of the software, subject to retaining the copyright and license notice.
+
+See the [`LICENSE`](LICENSE) file for the complete license text.
+
+---
+
+Made with ❤️ by **Akshay B K**
