@@ -1,8 +1,20 @@
 const $=s=>document.querySelector(s);
-const fmt=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:2}).format(n||0);
-const defaults=['Groceries','Housing','Transport','Dining','Shopping','Bills','Health','Entertainment','Other'];
+
+const fmt=n=>new Intl.NumberFormat('en-IN',{
+  style:'currency',
+  currency:'INR',
+  maximumFractionDigits:2
+}).format(n||0);
+
+const defaults=[
+  'Groceries','Housing','Transport','Dining','Shopping',
+  'Bills','Health','Entertainment','Other'
+];
+
 const config=window.BUDGET_VAULT_CONFIG||{};
+
 let db,user,budget=0,categories=[],expenses=[],isRegister=true;
+let authRedirecting=false;
 
 const configured=()=>config.supabaseUrl?.startsWith('https://')&&!config.supabaseAnonKey?.startsWith('PASTE_');
 
@@ -37,6 +49,53 @@ function isEmailConfirmationRedirect(){
     || hash.includes('access_token=');
 }
 
+/* NEW: Detect expired/invalid authentication errors */
+function isAuthError(error){
+  const message=String(error?.message||'').toLowerCase();
+  const code=String(error?.code||'').toLowerCase();
+  const status=Number(error?.status||error?.statusCode||0);
+
+  return code.includes('jwt')
+    || code.includes('token')
+    || message.includes('jwt')
+    || message.includes('token')
+    || message.includes('session expired')
+    || message.includes('invalid session')
+    || message.includes('authentication')
+    || status===401
+    || status===403;
+}
+
+/* NEW: Clear expired session and return user to login */
+async function handleSessionExpired(){
+  if(authRedirecting)return;
+  authRedirecting=true;
+
+  user=null;
+  budget=0;
+  categories=[];
+  expenses=[];
+
+  try{
+    if(db)await db.auth.signOut({scope:'local'});
+  }catch(_){}
+
+  $('#dashboard').hidden=true;
+  $('#auth').hidden=false;
+
+  $('#username').value='';
+  $('#passcode').value='';
+  $('#confirmPasscode').value='';
+
+  setAuthMode(false);
+
+  showError('Your session has expired. Please log in again.');
+
+  window.setTimeout(()=>{
+    authRedirecting=false;
+  },500);
+}
+
 function applyTheme(theme){
   document.body.dataset.theme=theme;
   $('#themeBtn').textContent=theme==='dark'?'☀ Light':'☾ Dark';
@@ -54,10 +113,13 @@ function setAuthMode(reg){
     :'Welcome back. Log in to access your budget.';
   $('#passcode').autocomplete=reg?'new-password':'current-password';
   $('#switchAuth').textContent=reg?'Already have an account? Log in':'New here? Create an account';
-  $('#authHint').textContent=reg
-    ?'Use an email address you can access, so you can confirm and recover your account.'
-    :'Enter the email address and password you used to register.';
-  $('#authHint').style.color='';
+
+  if(!$('#authHint').textContent.includes('session has expired')){
+    $('#authHint').textContent=reg
+      ?'Use an email address you can access, so you can confirm and recover your account.'
+      :'Enter the email address and password you used to register.';
+    $('#authHint').style.color='';
+  }
 }
 
 async function initialise(){
@@ -67,10 +129,18 @@ async function initialise(){
 
   db=window.supabase.createClient(config.supabaseUrl,config.supabaseAnonKey);
 
+  /* NEW: Listen for Supabase session changes */
+  db.auth.onAuthStateChange((event,session)=>{
+    if(event==='SIGNED_OUT' || (event==='TOKEN_REFRESHED'&&!session)){
+      handleSessionExpired();
+    }
+  });
+
   const confirmationRedirect=isEmailConfirmationRedirect();
   const {data:{session},error}=await db.auth.getSession();
 
   if(error){
+    if(isAuthError(error))return handleSessionExpired();
     return showError(error.message);
   }
 
@@ -114,10 +184,18 @@ async function login(email,password){
 }
 
 async function enterApp(next,confirmed=false){
+  authRedirecting=false;
   user=next;
   $('#auth').hidden=true;
   $('#dashboard').hidden=false;
-  await loadData();
+
+  try{
+    await loadData();
+  }catch(error){
+    if(isAuthError(error))return handleSessionExpired();
+    throw error;
+  }
+
   if(confirmed)showConfirmation();
 }
 
@@ -129,7 +207,13 @@ async function loadData(){
   ]);
 
   const bad=[br,cr,er].find(x=>x.error);
-  if(bad)return alert(`Could not load your data: ${bad.error.message}`);
+
+  if(bad){
+    /* NEW: Detect expired JWT instead of showing blank data */
+    if(isAuthError(bad.error))return handleSessionExpired();
+
+    return alert(`Could not load your data: ${bad.error.message}`);
+  }
 
   budget=Number(br.data?.amount||0);
   categories=cr.data||[];
@@ -138,7 +222,12 @@ async function loadData(){
     const {data,error}=await db.from('categories').insert(
       defaults.map(name=>({user_id:user.id,name}))
     ).select('id,name');
-    if(error)return alert(error.message);
+
+    if(error){
+      if(isAuthError(error))return handleSessionExpired();
+      return alert(error.message);
+    }
+
     categories=data;
   }
 
@@ -174,8 +263,10 @@ function render(){
     .join('');
 
   const old=$('#categoryFilter').value;
+
   $('#categoryFilter').innerHTML='<option value="">All categories</option>'+
     categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+
   $('#categoryFilter').value=old;
 
   renderExpenses();
@@ -185,6 +276,7 @@ function render(){
 function renderExpenses(){
   const q=$('#searchInput').value.toLowerCase();
   const cat=$('#categoryFilter').value;
+
   const rows=expenses.filter(x=>
     (!cat||x.category_id===cat)&&
     (`${x.description} ${x.notes}`.toLowerCase().includes(q))
@@ -230,8 +322,14 @@ window.editExpense=id=>openExpense(expenses.find(x=>x.id===id));
 
 window.removeExpense=async id=>{
   if(!confirm('Delete this expense?'))return;
+
   const {error}=await db.from('expenses').delete().eq('id',id);
-  if(error)return alert(error.message);
+
+  if(error){
+    if(isAuthError(error))return handleSessionExpired();
+    return alert(error.message);
+  }
+
   await loadData();
 };
 
@@ -245,14 +343,21 @@ window.removeCategory=async id=>{
   if(expenses.some(x=>x.category_id===id)){
     return alert('Move or delete expenses in this category first.');
   }
+
   const {error}=await db.from('categories').delete().eq('id',id);
-  if(error)return alert(error.message);
+
+  if(error){
+    if(isAuthError(error))return handleSessionExpired();
+    return alert(error.message);
+  }
+
   await loadData();
   renderCategories();
 };
 
 $('#authForm').onsubmit=async e=>{
   e.preventDefault();
+
   if(!configured())return;
 
   const email=$('#username').value.trim();
@@ -267,16 +372,20 @@ $('#authForm').onsubmit=async e=>{
     if(isRegister)await register(email,pass);
     else await login(email,pass);
   }catch(e){
+    if(isAuthError(e))return handleSessionExpired();
     showError(e.message);
   }
 };
 
 $('#switchAuth').onclick=()=>setAuthMode(!isRegister);
+
 $('#addExpenseBtn').onclick=()=>openExpense();
+
 $('#editBudgetBtn').onclick=()=>{
   $('#budgetInput').value=budget||'';
   $('#budgetDialog').showModal();
 };
+
 $('#addCategoryBtn').onclick=()=>{
   renderCategories();
   $('#categoryDialog').showModal();
@@ -288,12 +397,18 @@ document.querySelectorAll('[data-close]').forEach(x=>
 
 $('#budgetForm').onsubmit=async e=>{
   e.preventDefault();
+
   const {error}=await db.from('budgets').upsert({
     user_id:user.id,
     amount:Number($('#budgetInput').value),
     updated_at:new Date().toISOString()
   });
-  if(error)return alert(error.message);
+
+  if(error){
+    if(isAuthError(error))return handleSessionExpired();
+    return alert(error.message);
+  }
+
   $('#budgetDialog').close();
   await loadData();
 };
@@ -302,6 +417,7 @@ $('#expenseForm').onsubmit=async e=>{
   e.preventDefault();
 
   const id=$('#expenseId').value;
+
   const record={
     user_id:user.id,
     description:$('#expenseDescription').value.trim(),
@@ -315,20 +431,33 @@ $('#expenseForm').onsubmit=async e=>{
     ?await db.from('expenses').update(record).eq('id',id)
     :await db.from('expenses').insert(record);
 
-  if(res.error)return alert(res.error.message);
+  if(res.error){
+    if(isAuthError(res.error))return handleSessionExpired();
+    return alert(res.error.message);
+  }
+
   $('#expenseDialog').close();
   await loadData();
 };
 
 $('#createCategoryBtn').onclick=async()=>{
   const name=$('#newCategory').value.trim();
+
   if(!name)return;
+
   if(categories.some(c=>c.name.toLowerCase()===name.toLowerCase())){
     return alert('That category already exists.');
   }
 
-  const {error}=await db.from('categories').insert({user_id:user.id,name});
-  if(error)return alert(error.message);
+  const {error}=await db.from('categories').insert({
+    user_id:user.id,
+    name
+  });
+
+  if(error){
+    if(isAuthError(error))return handleSessionExpired();
+    return alert(error.message);
+  }
 
   $('#newCategory').value='';
   await loadData();
@@ -339,11 +468,15 @@ $('#searchInput').oninput=renderExpenses;
 $('#categoryFilter').onchange=renderExpenses;
 
 $('#lockBtn').onclick=async()=>{
-  await db.auth.signOut();
+  await db.auth.signOut({scope:'local'});
+
   user=null;
+
   $('#dashboard').hidden=true;
   $('#auth').hidden=false;
+
   $('#username').value=$('#passcode').value=$('#confirmPasscode').value='';
+
   setAuthMode(false);
 };
 
@@ -356,11 +489,20 @@ $('#csvBtn').onclick=()=>{
     ['Date','Description','Category','Amount','Notes'],
     ...expenses.map(x=>[x.date,x.description,x.category,x.amount,x.notes])
   ];
-  const csv=rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n');
+
+  const csv=rows
+    .map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(','))
+    .join('\n');
+
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+
+  a.href=URL.createObjectURL(
+    new Blob([csv],{type:'text/csv'})
+  );
+
   a.download='budget-expenses.csv';
   a.click();
+
   URL.revokeObjectURL(a.href);
 };
 
